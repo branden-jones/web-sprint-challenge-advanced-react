@@ -40,10 +40,11 @@ export default function AppFunctional(props) {
     // returns the fully constructed string.
   }
 
-  function reset(event) {
-    event.preventDefault();
+  function reset() {
+    // event.preventDefault();
     setBLocation(4);
     setSteps(0);
+    setEmail('');
     // setDisplayValues(initialValues);
     // Use this helper to reset all states to their initial values.
   }
@@ -95,12 +96,10 @@ export default function AppFunctional(props) {
     }
   }
 
-
   function onChange(evt) {
     // You will need this to update the value of the input.
     evt.preventDefault();
     setEmail(evt.target.value)
-    // setDisplayValues({...displayValues, email: evt.target.value})
   }
 
   function onSubmit(evt) {
@@ -110,14 +109,15 @@ export default function AppFunctional(props) {
       .then(res => {
         setXYMessage(res.data.message)
       })
-      .catch(err => console.log(err.response.data.message))
+      .catch(err => 
+        setXYMessage(err.response.data.message));
   }
 
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">Coordinates {`(${x}, ${y})`}</h3>
-        <h3 id="steps">You moved {steps} times</h3>
+        <h3 id="steps">You moved {steps} {steps > 1 ? `times` : `time`}</h3>
       </div>
       <div id="grid">
         {
@@ -139,7 +139,7 @@ export default function AppFunctional(props) {
         <button id="reset" onClick={reset}>reset</button>
       </div>
       <form onSubmit={onSubmit}>
-        <input id="email" type="email" placeholder="type email" onChange={onChange}></input>
+        <input id="email" type="email" placeholder="type email" onChange={onChange} ></input>
         <input id="submit" type="submit" onClick={onSubmit}></input>
       </form>
     </div>
