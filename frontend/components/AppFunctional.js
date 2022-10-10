@@ -83,7 +83,7 @@ export default function AppFunctional(props) {
         setBLocation(bLocation + 1)
         setSteps(steps + 1);
       } else { 
-      setXYMessage(`You can't go left`)
+      setXYMessage(`You can't go right`)
       }
     }
     if (move === 'left') {
