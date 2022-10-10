@@ -41,13 +41,11 @@ export default function AppFunctional(props) {
   }
 
   function reset() {
-    // event.preventDefault();
+    // Use this helper to reset all states to their initial values.
     setBLocation(4);
     setSteps(0);
     setEmail('');
     setXYMessage('')
-    // setDisplayValues(initialValues);
-    // Use this helper to reset all states to their initial values.
   }
 
   function getNextIndex(direction) {
@@ -118,7 +116,7 @@ export default function AppFunctional(props) {
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">Coordinates {`(${x}, ${y})`}</h3>
-        <h3 id="steps">You moved {steps} {steps > 1 ? `times` : `time`}</h3>
+        <h3 id="steps">You moved {steps} {steps === 1 ? `time` : `times`}</h3>
       </div>
       <div id="grid">
         {
