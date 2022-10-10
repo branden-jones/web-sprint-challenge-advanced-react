@@ -45,6 +45,7 @@ export default function AppFunctional(props) {
     setBLocation(4);
     setSteps(0);
     setEmail('');
+    setXYMessage('')
     // setDisplayValues(initialValues);
     // Use this helper to reset all states to their initial values.
   }
