@@ -21,7 +21,7 @@ export default function AppFunctional(props) {
   const [steps, setSteps] = useState(0);
   const [email, setEmail] = useState('')
   const [xYMessage, setXYMessage] = useState('');
-  const coordinates = [[1, 1], [1, 2], [1, 3], [2, 1], [2, 2], [2, 3], [3, 1], [3, 2], [3, 3]];
+  const coordinates = [[1, 1], [2, 1], [3, 1],[1, 2], [2, 2], [3, 2],[1, 3], [2, 3], [3, 3],];
 
   function getXY(move) {
     // It it not necessary to have a state to track the coordinates.
