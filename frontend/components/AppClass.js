@@ -6,6 +6,8 @@ const initialMessage = "";
 const initialEmail = "";
 const initialSteps = 0;
 const initialIndex = 4; // the index the "B" is at
+const initialCoordX = 2;
+const initialCoordY = 2;
 
 const initialState = {};
 const coordinates = [
@@ -30,18 +32,22 @@ export default class AppClass extends React.Component {
       email: initialEmail,
       index: initialIndex,
       steps: initialSteps,
-      // x: coordinates[this.index][0,0],
-      // y: coordinates[this.index][0,1]
+      x: initialCoordX,
+      y: initialCoordY,
     };
   }
 
   // x = coordinates[this.index][0,0];
   // y = coordinates[this.index][0,1];
   // console.log(`x`, x, `y`, y);
+  // x = coordinates[this.state.index][(0, 0)];
+  // y = coordinates[this.state.index][(0, 1)];
 
   getXY = () => {
     // It it not necessary to have a state to track the coordinates.
     // It's enough to know what index the "B" is at, to be able to calculate them.
+    return console.log(this.state.index);
+    // return { x: coordinates[this.state.index][(0, 0)], y: coordinates[this.state.index][(0, 1)] };
   };
 
   getXYMessage = () => {
@@ -50,13 +56,15 @@ export default class AppClass extends React.Component {
     // returns the fully constructed string.
   };
 
-  reset = () => {
+  reset = (evt) => {
     // Use this helper to reset all states to their initial values.
     this.state = {
       message: initialMessage,
       email: initialEmail,
       index: initialIndex,
       steps: initialSteps,
+      x: initialCoordX,
+      y: initialCoordY,
     };
   };
 
@@ -71,23 +79,44 @@ export default class AppClass extends React.Component {
     // and change any states accordingly.
     const move = evt.target.id;
     evt.preventDefault();
+    this.setState({ ...this.state, steps: this.state.steps + 1 });
     if (move === "up") {
-      console.log(`up`);
-      this.state.index = this.state.index - 3;
+      if (this.state.y - 1 > 0 && this.state.index - 3 >= 0) {
+        console.log(`up`);
+        this.state.index = this.state.index - 3;
+        this.state.y = this.state.y - 1;
+      } else {
+        this.setState({ ...this.state, message: `You can't go up` });
+      }
     }
     if (move === "right") {
-      console.log(`right`);
-      this.state.index = this.state.index + 1;
+      if (this.state.x + 1 < 4 && this.state.index <= 8) {
+        console.log(`right`);
+        this.state.index = this.state.index + 1;
+        this.state.x = this.state.x + 1;
+      } else {
+        this.setState({ ...this.state, message: `You can't go right` });
+      }
     }
     if (move === "down") {
-      console.log(`down`);
-      this.state.index = this.state.index + 3;
+      if (this.state.y + 1 < 4 && this.index <= 8) {
+        console.log(`down`);
+        this.state.index = this.state.index + 3;
+        this.state.y = this.state.y + 1;
+      } else {
+        this.setState({ ...this.state, message: `You can't go down` });
+      }
     }
     if (move === "left") {
-      console.log(`left`);
-      this.state.index = this.state.index - 1;
+      if (this.state.x - 1 > 0 && this.state.index >= 0) {
+        console.log(`left`);
+        this.state.index = this.state.index - 1;
+        this.state.x = this.state.x - 1;
+      } else {
+        this.setState({ ...this.state, message: `You can't go down` });
+      }
     }
-    console.log(this.state.index);
+    console.log(`x`, this.state.x, `y`, this.state.y, `index`, this.state.index);
   };
 
   onChange = (evt) => {
@@ -100,7 +129,7 @@ export default class AppClass extends React.Component {
     // Use a POST request to send a payload to the server.
     evt.preventDefault();
     axios
-      .post(`http://localhost:9000/api/result`, { x: 2, y: 2, steps: this.state.steps, email: this.state.email })
+      .post(`http://localhost:9000/api/result`, { x: this.state.x, y: this.state.y, steps: this.state.steps, email: this.state.email })
       .then((res) => {
         this.setState({ ...this.state, message: res.data.message });
       })
@@ -113,7 +142,9 @@ export default class AppClass extends React.Component {
     return (
       <div id="wrapper" className={className}>
         <div className="info">
-          <h3 id="coordinates">Coordinates (2, 2)</h3>
+          <h3 id="coordinates">
+            Coordinates ({this.state.x},{this.state.y})
+          </h3>
           <h3 id="steps">
             You moved {this.state.steps} {this.state.steps === 1 ? "time" : "times"}{" "}
           </h3>
