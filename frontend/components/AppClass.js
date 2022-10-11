@@ -26,7 +26,7 @@ export default class AppClass extends React.Component {
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
   // You can delete them and build your own logic from scratch.
   constructor(props) {
-    super();
+    super(props);
     this.state = {
       message: initialMessage,
       email: initialEmail,
@@ -35,6 +35,7 @@ export default class AppClass extends React.Component {
       x: initialCoordX,
       y: initialCoordY,
     };
+    console.log(`state log`, `x`, this.state.x, `y`, this.state.y);
   }
 
   // x = coordinates[this.index][0,0];
@@ -46,8 +47,6 @@ export default class AppClass extends React.Component {
   getXY = () => {
     // It it not necessary to have a state to track the coordinates.
     // It's enough to know what index the "B" is at, to be able to calculate them.
-    return console.log(this.state.index);
-    // return { x: coordinates[this.state.index][(0, 0)], y: coordinates[this.state.index][(0, 1)] };
   };
 
   getXYMessage = () => {
@@ -58,14 +57,15 @@ export default class AppClass extends React.Component {
 
   reset = (evt) => {
     // Use this helper to reset all states to their initial values.
-    this.state = {
+    this.setState({
+      ...this.state,
       message: initialMessage,
       email: initialEmail,
       index: initialIndex,
       steps: initialSteps,
-      x: initialCoordX,
-      y: initialCoordY,
-    };
+      x: 2,
+      y: 2,
+    });
   };
 
   getNextIndex = (direction) => {
@@ -79,44 +79,42 @@ export default class AppClass extends React.Component {
     // and change any states accordingly.
     const move = evt.target.id;
     evt.preventDefault();
-    this.setState({ ...this.state, steps: this.state.steps + 1 });
     if (move === "up") {
       if (this.state.y - 1 > 0 && this.state.index - 3 >= 0) {
-        console.log(`up`);
-        this.state.index = this.state.index - 3;
-        this.state.y = this.state.y - 1;
+        this.setState({ index: this.state.index - 3 });
+        this.setState({ y: this.state.y - 1 });
+        this.setState({ steps: this.state.steps + 1, message: "" });
       } else {
-        this.setState({ ...this.state, message: `You can't go up` });
+        this.setState({ message: `You can't go up` });
       }
     }
     if (move === "right") {
-      if (this.state.x + 1 < 4 && this.state.index <= 8) {
-        console.log(`right`);
-        this.state.index = this.state.index + 1;
-        this.state.x = this.state.x + 1;
+      if (this.state.x + 1 < 4 && this.state.index + 1 <= 8) {
+        this.setState({ index: this.state.index + 1 });
+        this.setState({ x: this.state.x + 1 });
+        this.setState({ steps: this.state.steps + 1, message: "" });
       } else {
-        this.setState({ ...this.state, message: `You can't go right` });
+        this.setState({ message: `You can't go right` });
       }
     }
     if (move === "down") {
-      if (this.state.y + 1 < 4 && this.index <= 8) {
-        console.log(`down`);
-        this.state.index = this.state.index + 3;
-        this.state.y = this.state.y + 1;
+      if (this.state.y + 1 < 4 && this.state.index + 3 <= 8) {
+        this.setState({ index: this.state.index + 3 });
+        this.setState({ y: this.state.y + 1 });
+        this.setState({ steps: this.state.steps + 1, message: "" });
       } else {
-        this.setState({ ...this.state, message: `You can't go down` });
+        this.setState({ message: `You can't go down` });
       }
     }
     if (move === "left") {
-      if (this.state.x - 1 > 0 && this.state.index >= 0) {
-        console.log(`left`);
-        this.state.index = this.state.index - 1;
-        this.state.x = this.state.x - 1;
+      if (this.state.x - 1 > 0 && this.state.index - 1 >= 0) {
+        this.setState({ index: this.state.index - 1 });
+        this.setState({ x: this.state.x - 1 });
+        this.setState({ steps: this.state.steps + 1, message: "" });
       } else {
-        this.setState({ ...this.state, message: `You can't go down` });
+        this.setState({ message: `You can't go left` });
       }
     }
-    console.log(`x`, this.state.x, `y`, this.state.y, `index`, this.state.index);
   };
 
   onChange = (evt) => {
@@ -131,9 +129,9 @@ export default class AppClass extends React.Component {
     axios
       .post(`http://localhost:9000/api/result`, { x: this.state.x, y: this.state.y, steps: this.state.steps, email: this.state.email })
       .then((res) => {
-        this.setState({ ...this.state, message: res.data.message });
+        this.setState({ message: res.data.message });
       })
-      .catch((err) => console.log(`Woops... somethings wrong`, err.response.data.message));
+      .catch((err) => this.setState({ message: err.response.data.message }));
     this.reset();
   };
 
@@ -142,12 +140,12 @@ export default class AppClass extends React.Component {
     return (
       <div id="wrapper" className={className}>
         <div className="info">
-          <h3 id="coordinates">
-            Coordinates ({this.state.x},{this.state.y})
-          </h3>
-          <h3 id="steps">
-            You moved {this.state.steps} {this.state.steps === 1 ? "time" : "times"}{" "}
-          </h3>
+          {this.state.x && (
+            <h3 id="coordinates">
+              Coordinates ({this.state.x}, {this.state.y})
+            </h3>
+          )}
+          <h3 id="steps">{`You moved ${this.state.steps} ${this.state.steps === 1 ? "time" : "times"}`}</h3>
         </div>
         <div id="grid">
           {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((idx) => (
@@ -176,8 +174,8 @@ export default class AppClass extends React.Component {
             reset
           </button>
         </div>
-        <form>
-          <input id="email" type="email" placeholder="type email" onChange={this.onChange} value={this.email} />
+        <form onSubmit={this.onSubmit}>
+          <input id="email" type="email" placeholder="type email" onChange={this.onChange} value={this.state.email} />
           <input id="submit" type="submit" onClick={this.onSubmit} />
         </form>
       </div>
