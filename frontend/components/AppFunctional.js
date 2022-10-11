@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import axios from "axios";
 
 // Suggested initial states
-const initialValues = {
-  message: "",
-  email: "",
-  steps: 0,
-  bLocation: 4,
-};
+const initialMessage = "";
+const initialEmail = "";
+const initialSteps = 0;
+const initialBLocation = 4;
+
 const coordinates = [
   [1, 1],
   [2, 1],
@@ -24,10 +23,10 @@ const coordinates = [
 export default function AppFunctional(props) {
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
   // You can delete them and build your own logic from scratch.
-  const [bLocation, setBLocation] = useState(4);
-  const [steps, setSteps] = useState(0);
+  const [bLocation, setBLocation] = useState(initialBLocation);
+  const [steps, setSteps] = useState(initialSteps);
   const [email, setEmail] = useState("");
-  const [xYMessage, setXYMessage] = useState("");
+  const [message, setMessage] = useState("");
   let x = coordinates[bLocation][(0, 0)];
   let y = coordinates[bLocation][(0, 1)];
 
@@ -44,10 +43,10 @@ export default function AppFunctional(props) {
 
   function reset() {
     // Use this helper to reset all states to their initial values.
-    setBLocation(4);
-    setSteps(0);
-    setEmail("");
-    setXYMessage("");
+    setBLocation(initialBLocation);
+    setSteps(initialSteps);
+    setEmail(initialEmail);
+    setMessage(initialMessage);
   }
 
   function getNextIndex(direction) {
@@ -62,12 +61,13 @@ export default function AppFunctional(props) {
     evt.preventDefault();
 
     let move = evt.target.id;
+    setMessage(initialMessage);
     if (move === "up") {
       if (y - 1 > 0 && bLocation - 3 >= 0) {
         setBLocation(bLocation - 3);
         setSteps(steps + 1);
       } else {
-        setXYMessage(`You can't go up`);
+        setMessage(`You can't go up`);
       }
     }
     if (move === "down") {
@@ -75,7 +75,7 @@ export default function AppFunctional(props) {
         setBLocation(bLocation + 3);
         setSteps(steps + 1);
       } else {
-        setXYMessage(`You can't go down`);
+        setMessage(`You can't go down`);
       }
     }
     if (move === "right") {
@@ -83,7 +83,7 @@ export default function AppFunctional(props) {
         setBLocation(bLocation + 1);
         setSteps(steps + 1);
       } else {
-        setXYMessage(`You can't go right`);
+        setMessage(`You can't go right`);
       }
     }
     if (move === "left") {
@@ -91,11 +91,11 @@ export default function AppFunctional(props) {
         setBLocation(bLocation - 1);
         setSteps(steps + 1);
       } else {
-        setXYMessage(`You can't go left`);
+        setMessage(`You can't go left`);
       }
     }
   }
-
+  console.log(`x`, x, `y`, y);
   function onChange(evt) {
     // You will need this to update the value of the input.
     evt.preventDefault();
@@ -108,9 +108,9 @@ export default function AppFunctional(props) {
     axios
       .post(`http://localhost:9000/api/result`, { x: x, y: y, steps: steps, email: `${email}` })
       .then((res) => {
-        setXYMessage(res.data.message);
+        setMessage(res.data.message);
       })
-      .catch((err) => setXYMessage(err.response.data.message));
+      .catch((err) => setMessage(err.response.data.message));
     reset();
   }
 
@@ -130,7 +130,7 @@ export default function AppFunctional(props) {
         ))}
       </div>
       <div className="info">
-        <h3 id="message">{xYMessage}</h3>
+        <h3 id="message">{message}</h3>
       </div>
       <div id="keypad">
         <button id="left" onClick={move}>
