@@ -35,14 +35,7 @@ export default class AppClass extends React.Component {
       x: initialCoordX,
       y: initialCoordY,
     };
-    console.log(`state log`, `x`, this.state.x, `y`, this.state.y);
   }
-
-  // x = coordinates[this.index][0,0];
-  // y = coordinates[this.index][0,1];
-  // console.log(`x`, x, `y`, y);
-  // x = coordinates[this.state.index][(0, 0)];
-  // y = coordinates[this.state.index][(0, 1)];
 
   getXY = () => {
     // It it not necessary to have a state to track the coordinates.

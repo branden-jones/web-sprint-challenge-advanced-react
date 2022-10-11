@@ -95,7 +95,7 @@ export default function AppFunctional(props) {
       }
     }
   }
-  console.log(`x`, x, `y`, y);
+
   function onChange(evt) {
     // You will need this to update the value of the input.
     evt.preventDefault();
